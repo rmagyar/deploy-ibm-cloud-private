@@ -38,7 +38,7 @@ resource "openstack_compute_instance_v2" "icp_master_vm" {
 
 data "template_file" "bootstrap_init" {
     template = "${file("../common/bootstrap_icp_node.sh")}"
-    vars {
+    vars = {
         docker_download_location = "${var.docker_download_location}"
         smt_value_master = "${var.smt_value_master}"
     }
@@ -93,7 +93,7 @@ resource "openstack_compute_instance_v2" "icp_worker_vm" {
 
 data "template_file" "bootstrap_worker" {
     template = "${file("../common/bootstrap_icp_node.sh")}"
-    vars {
+    vars = {
         docker_download_location = "${var.docker_download_location}"
         smt_value_master = ""
     }

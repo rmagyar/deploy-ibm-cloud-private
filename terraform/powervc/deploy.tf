@@ -41,7 +41,7 @@ locals {
 ## Call the ICP Deployment module
 ################################################################
 module "icpprovision" {
-    source                  = "github.com/ibm-cloud-architecture/terraform-module-icp-deploy?ref=3.1.1"
+    source                  = "github.com/rmagyar/terraform-module-icp-deploy"
 
     icp-host-groups = {
         master      = "${openstack_compute_instance_v2.icp_master_vm.*.network.0.fixed_ip_v4}"
@@ -50,8 +50,8 @@ module "icpprovision" {
         proxy       = "${split(" ", var.openstack_proxy_node["count"] == "0" ? join(" ", openstack_compute_instance_v2.icp_master_vm.*.network.0.fixed_ip_v4) : join(" ", openstack_compute_instance_v2.icp_proxy_vm.*.network.0.fixed_ip_v4))}"
         va          = "${split(" ", var.openstack_va_node["count"] == "0" ? join(" ", openstack_compute_instance_v2.icp_master_vm.*.network.0.fixed_ip_v4) : join(" ", openstack_compute_instance_v2.icp_va_vm.*.network.0.fixed_ip_v4))}"
     }
-    boot-node = "${openstack_compute_instance_v2.icp_master_vm.0.network.0.fixed_ip_v4}"
-    cluster_size            = "${openstack_compute_instance_v2.icp_master_vm.count + var.openstack_worker_node["count"] + var.openstack_management_node["count"] + var.openstack_proxy_node["count"] + var.openstack_va_node["count"]}"
+    boot-node = "${openstack_compute_instance_v2.icp_master_vm.network.0.fixed_ip_v4}"
+    cluster_size            = "${length(openstack_compute_instance_v2.icp_master_vm) + var.openstack_worker_node["count"] + var.openstack_management_node["count"] + var.openstack_proxy_node["count"] + var.openstack_va_node["count"]}"
 
     icp_configuration       = "${merge(local.config, var.icp_configuration)}"
 
